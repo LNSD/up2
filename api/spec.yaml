@@ -1,0 +1,139 @@
+openapi: 3.0.3
+info:
+  title: Upload Pre-signed URL Provider
+  description: Upload Pre-signed URL Provider (UP2) service Rest API
+  version: 1.0.0
+
+paths:
+  /upload:
+    post:
+      summary: Create a pre-signed upload URL (Pre-signed PUT URL)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRequestBody'
+
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreSignedUrl'
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: "Authorization information is missing or invalid"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /download:
+    post:
+      summary: Create a pre-signed download URL (Pre-signed GET URL)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DownloadRequestBody'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreSignedUrl'
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: "Authorization information is missing or invalid"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  /healthz:
+    get:
+      summary: "K8s readiness and liveness probe"
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          description: The error message
+          type: string
+      required:
+        - message
+
+    UploadRequestBody:
+      type: object
+      properties:
+        expiration:
+          description: URL expiration time in seconds
+          type: integer
+
+    DownloadRequestBody:
+      type: object
+      properties:
+        id:
+          description: Identifier of the file to download
+          type: string
+        expiration:
+          description: URL expiration time in seconds
+          type: integer
+      required:
+        - id
+
+    PreSignedUrl:
+      type: object
+      properties:
+        id:
+          description: URL identifier
+          type: string
+          format: uuid
+        expiration:
+          description: URL expiration time in seconds
+          type: integer
+        url:
+          description: The presigned URL
+          type: string
+          format: uri
+      required:
+        - id
+        - expiration
+        - url
+

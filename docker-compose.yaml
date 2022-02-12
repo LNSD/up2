@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  aws:
+    image: localstack/localstack:0.14.0
+    container_name: aws
+    ports:
+      - '4566:4566'
+    volumes:
+      - './test/fixtures/aws/.init:/docker-entrypoint-initaws.d'
+      - './volumes/s3-storage/.localstack:/tmp/localstack'
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DEFAULT_REGION=eu-central-1
+      - HOSTNAME_EXTERNAL=localhost
+      - USE_SSL=false
+      - AWS_ACCESS_KEY_ID=9WIEXS3EXA0PCW5ZIU40
+      - AWS_SECRET_ACCESS_KEY=ql3WvP14AXNuUjkEUkIAJyyG51Cal7hLGXlXkerq
+      - S3_BUCKET=upload
+
+  minio:
+    image: quay.io/minio/minio:RELEASE.2022-02-12T00-51-25Z
+    container_name: minio
+    volumes:
+      - 'data:/data'
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      - MINIO_ROOT_USER=AKIAIOSFODNN7EXAMPLE
+      - MINIO_ROOT_PASSWORD=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    command: [ "server", "--console-address", ":9001", "/data" ]
+
+  up2:
+    image: up2
+    container_name: up2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      - UP2_BUCKET=upload
+      # aws
+      - UP2_AWS_ENDPOINT=aws:9000
+      - UP2_AWS_REGION=eu-central-1
+      - UP2_AWS_ACCESS_KEY_ID=9WIEXS3EXA0PCW5ZIU40
+      - UP2_AWS_SECRET_ACCESS_KEY=ql3WvP14AXNuUjkEUkIAJyyG51Cal7hLGXlXkerq
+      ## minio
+      #- UP2_MINIO_ENDPOINT=minio:9000
+      #- UP2_MINIO_ACCESS_KEY_ID=9WIEXS3EXA0PCW5ZIU40
+      #- UP2_MINIO_SECRET_ACCESS_KEY=ql3WvP14AXNuUjkEUkIAJyyG51Cal7hLGXlXkerq
+    depends_on:
+      #- minio
+      - aws
+
+volumes:
+  data:
