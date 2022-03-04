@@ -32,7 +32,7 @@ func TestValidateInvalidServerConfig(t *testing.T) {
 	err := config.LoadAndValidateConfig()
 
 	// Then
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }
 
 func TestValidateCorrectServerConfig(t *testing.T) {

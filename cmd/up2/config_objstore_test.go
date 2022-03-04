@@ -31,7 +31,7 @@ func TestValidateIncompleteObjectStoreConfig(t *testing.T) {
 	err := config.LoadAndValidateConfig()
 
 	// Then
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }
 
 func TestValidateCorrectObjectStoreConfig(t *testing.T) {
