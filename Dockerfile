@@ -12,7 +12,7 @@ RUN make build
 
 
 FROM alpine:3.15
-COPY --from=builder /src/bin/up2 /usr/bin/up2
+COPY --from=builder /src/out/bin/up2 /usr/bin/up2
 
 EXPOSE 8080
 ENTRYPOINT ["up2"]

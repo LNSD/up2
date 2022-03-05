@@ -17,11 +17,11 @@ EXPORT_RESULT?=false # for CI please set EXPORT_RESULT to true
 
 .PHONY: all test build vendor
 
-all: clean vendor lint test build
+all: clean vendor lint build test
 
 
 ## Generate:
-codegen: ## Generate OpenAPI 3.0 client and server code
+codegen: ## Generate OpenAPI 3.0 server code
 ifeq (, $(shell which oapi-codegen))
 	GO111MODULE=off $(GO) get -u github.com/deepmap/oapi-codegen/cmd/oapi-codegen
 endif
@@ -45,14 +45,30 @@ lint-go: 	## Use golintci-lint on your project
 	docker run --name make-lint-go --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:latest-alpine golangci-lint run --verbose --deadline=120s $(OUTPUT_OPTIONS)
 
 ## Test:
-test:		## Run the tests of the project
+test:	## Run the unit and integration tests
+ifeq ($(EXPORT_RESULT), true)
+	GO111MODULE=off go get -u github.com/jstemmer/go-junit-report
+	$(eval OUTPUT_OPTIONS = | tee /dev/tty | go-junit-report -set-exit-code > junit-report.xml)
+endif
+	$(GO) test --tags=integration -v -race  ./... $(OUTPUT_OPTIONS)
+
+test-cov: 	## Run the unit and integration tests and export the coverage
+	$(GO) test --tags=integration -cover -covermode=count -coverprofile=profile.cov ./...
+	$(GO) tool cover -func profile.cov
+ifeq ($(EXPORT_RESULT), true)
+	GO111MODULE=off $(GO) get -u github.com/AlekSi/gocov-xml
+	GO111MODULE=off $(GO) get -u github.com/axw/gocov/gocov
+	gocov convert profile.cov | gocov-xml > coverage.xml
+endif
+
+unittest:		## Run the unit tests
 ifeq ($(EXPORT_RESULT), true)
 	GO111MODULE=off go get -u github.com/jstemmer/go-junit-report
 	$(eval OUTPUT_OPTIONS = | tee /dev/tty | go-junit-report -set-exit-code > junit-report.xml)
 endif
 	$(GO) test -v -race ./... $(OUTPUT_OPTIONS)
 
-coverage: 	## Run the tests of the project and export the coverage
+unittest-cov: 	## Run the unit tests and export the coverage
 	$(GO) test -cover -covermode=count -coverprofile=profile.cov ./...
 	$(GO) tool cover -func profile.cov
 ifeq ($(EXPORT_RESULT), true)
@@ -64,11 +80,11 @@ endif
 
 ## Build:
 build: 		## Build your project and put the output binary in out/bin/
-	mkdir -p ./bin
-	GO111MODULE=on $(GO) build -mod vendor -o ./bin/$(BINARY_NAME) ./cmd/up2
+	mkdir -p ./out
+	GO111MODULE=on $(GO) build -mod vendor -o ./out/bin/$(BINARY_NAME) ./cmd/up2
 
 clean: 		## Remove build related file
-	rm -fr ./bin
+	rm -fr ./out ./tmp
 	rm -f ./junit-report.xml checkstyle-report.xml ./coverage.xml ./profile.cov yamllint-checkstyle.xml
 
 vendor: 	## Copy of all packages needed to support builds and tests in the vendor directory
