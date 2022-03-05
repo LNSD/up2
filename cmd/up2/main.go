@@ -53,7 +53,7 @@ func getObjetStoreFromConfig(storeConfig *ObjectStoreConfig) objectstore.ObjectS
 		store = objectstore.NewS3ObjectStore(objectstore.AwsConfig{
 			Endpoint:          (*storeConfig.Aws).Endpoint,
 			Region:            (*storeConfig.Aws).Region,
-			AccessKeyId:       (*storeConfig.Aws).AccessKeyId,
+			AccessKeyID:       (*storeConfig.Aws).AccessKeyID,
 			SecretAccessKey:   (*storeConfig.Aws).SecretAccessKey,
 			Bucket:            storeConfig.Bucket,
 			ObjectNamePrefix:  storeConfig.ObjectNamePrefix,
@@ -62,7 +62,7 @@ func getObjetStoreFromConfig(storeConfig *ObjectStoreConfig) objectstore.ObjectS
 	} else if storeConfig.Minio != nil {
 		store = objectstore.NewMinioObjectStore(objectstore.MinioConfig{
 			Endpoint:          (*storeConfig.Minio).Endpoint,
-			AccessKeyId:       (*storeConfig.Minio).AccessKeyId,
+			AccessKeyID:       (*storeConfig.Minio).AccessKeyID,
 			SecretAccessKey:   (*storeConfig.Minio).SecretAccessKey,
 			Bucket:            storeConfig.Bucket,
 			ObjectNamePrefix:  storeConfig.ObjectNamePrefix,

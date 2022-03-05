@@ -12,7 +12,7 @@ import (
 type AwsConfig struct {
 	Endpoint          string
 	Region            string
-	AccessKeyId       string
+	AccessKeyID       string
 	SecretAccessKey   string
 	Bucket            string
 	ObjectNamePrefix  string
@@ -27,7 +27,7 @@ func (s s3ObjectStore) Connect() error {
 	_, err := session.NewSession(&aws.Config{
 		Endpoint:    aws.String(s.config.Endpoint),
 		Region:      aws.String(s.config.Region),
-		Credentials: credentials.NewStaticCredentials(s.config.AccessKeyId, s.config.SecretAccessKey, ""),
+		Credentials: credentials.NewStaticCredentials(s.config.AccessKeyID, s.config.SecretAccessKey, ""),
 	})
 	if err != nil {
 		return err
@@ -36,17 +36,17 @@ func (s s3ObjectStore) Connect() error {
 	return nil
 }
 
-func (s s3ObjectStore) GetUploadUrl(key string) (*PreSignedUrl, error) {
-	return s.GetUploadUrlWithExpiration(key, s.config.DefaultExpiration)
+func (s s3ObjectStore) GetUploadURL(key string) (*PreSignedURL, error) {
+	return s.GetUploadURLWithExpiration(key, s.config.DefaultExpiration)
 }
 
-func (s s3ObjectStore) GetUploadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error) {
+func (s s3ObjectStore) GetUploadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error) {
 	// Initialize aws client session instance
 	// TODO: Share client instance between calls
 	sess, err := session.NewSession(&aws.Config{
 		Endpoint:    aws.String(s.config.Endpoint),
 		Region:      aws.String(s.config.Region),
-		Credentials: credentials.NewStaticCredentials(s.config.AccessKeyId, s.config.SecretAccessKey, ""),
+		Credentials: credentials.NewStaticCredentials(s.config.AccessKeyID, s.config.SecretAccessKey, ""),
 	})
 	if err != nil {
 		return nil, err
@@ -68,20 +68,20 @@ func (s s3ObjectStore) GetUploadUrlWithExpiration(key string, expiration time.Du
 		return nil, fmt.Errorf("error presigning the request: %s", err)
 	}
 
-	return &PreSignedUrl{url, expiration}, nil
+	return &PreSignedURL{url, expiration}, nil
 }
 
-func (s s3ObjectStore) GetDownloadUrl(key string) (*PreSignedUrl, error) {
-	return s.GetUploadUrlWithExpiration(key, s.config.DefaultExpiration)
+func (s s3ObjectStore) GetDownloadURL(key string) (*PreSignedURL, error) {
+	return s.GetUploadURLWithExpiration(key, s.config.DefaultExpiration)
 }
 
-func (s s3ObjectStore) GetDownloadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error) {
+func (s s3ObjectStore) GetDownloadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error) {
 	// Initialize aws client session instance
 	// TODO: Share client instance between calls
 	sess, err := session.NewSession(&aws.Config{
 		Endpoint:    aws.String(s.config.Endpoint),
 		Region:      aws.String(s.config.Region),
-		Credentials: credentials.NewStaticCredentials(s.config.AccessKeyId, s.config.SecretAccessKey, ""),
+		Credentials: credentials.NewStaticCredentials(s.config.AccessKeyID, s.config.SecretAccessKey, ""),
 	})
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ func (s s3ObjectStore) GetDownloadUrlWithExpiration(key string, expiration time.
 		return nil, fmt.Errorf("error presigning the request: %s", err)
 	}
 
-	return &PreSignedUrl{url, expiration}, nil
+	return &PreSignedURL{url, expiration}, nil
 }
 
 func NewS3ObjectStore(config AwsConfig) ObjectStore {

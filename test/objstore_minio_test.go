@@ -97,8 +97,8 @@ func TestIntegrationMinioObjectStoreConnect(t *testing.T) {
 	ctx := context.Background()
 
 	// Start the container
-	minioContainer := itutils.NewMinioContainer(t, ctx)
-	defer itutils.TerminateMinio(t, ctx, minioContainer)
+	minioContainer := itutils.NewMinioContainer(ctx, t)
+	defer itutils.TerminateMinio(ctx, t, minioContainer)
 
 	// Initialize MinIO instance
 	itutils.InitMinio(t, minioContainer)
@@ -107,7 +107,7 @@ func TestIntegrationMinioObjectStoreConnect(t *testing.T) {
 	store := objectstore.NewMinioObjectStore(objectstore.MinioConfig{
 		Endpoint:          minioContainer.Endpoint,
 		Bucket:            minioContainer.Bucket,
-		AccessKeyId:       minioContainer.AccessKeyId,
+		AccessKeyID:       minioContainer.AccessKeyID,
 		SecretAccessKey:   minioContainer.SecretAccessKey,
 		ObjectNamePrefix:  "",
 		DefaultExpiration: 60 * time.Second,
@@ -120,7 +120,7 @@ func TestIntegrationMinioObjectStoreConnect(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestIntegrationMinioObjectStoreGeUploadUrl(t *testing.T) {
+func TestIntegrationMinioObjectStoreGeUploadURL(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping integration test")
 	}
@@ -129,8 +129,8 @@ func TestIntegrationMinioObjectStoreGeUploadUrl(t *testing.T) {
 	ctx := context.Background()
 
 	// Start the container
-	minioContainer := itutils.NewMinioContainer(t, ctx)
-	defer itutils.TerminateMinio(t, ctx, minioContainer)
+	minioContainer := itutils.NewMinioContainer(ctx, t)
+	defer itutils.TerminateMinio(ctx, t, minioContainer)
 
 	// Initialize MinIO instance
 	itutils.InitMinio(t, minioContainer)
@@ -139,7 +139,7 @@ func TestIntegrationMinioObjectStoreGeUploadUrl(t *testing.T) {
 	store := objectstore.NewMinioObjectStore(objectstore.MinioConfig{
 		Endpoint:          minioContainer.Endpoint,
 		Bucket:            minioContainer.Bucket,
-		AccessKeyId:       minioContainer.AccessKeyId,
+		AccessKeyID:       minioContainer.AccessKeyID,
 		SecretAccessKey:   minioContainer.SecretAccessKey,
 		ObjectNamePrefix:  "",
 		DefaultExpiration: 60 * time.Second,
@@ -147,14 +147,14 @@ func TestIntegrationMinioObjectStoreGeUploadUrl(t *testing.T) {
 
 	/// When
 	uuid := faker.New().UUID().V4()
-	preSignedURL, err := store.GetUploadUrl(uuid)
+	preSignedURL, err := store.GetUploadURL(uuid)
 
-	uploadFile(t, "./testdata/up.gif", preSignedURL.Url)
+	uploadFile(t, "./testdata/up.gif", preSignedURL.URL)
 
 	/// Then
 	assert.NoError(t, err)
 	assert.NotNil(t, preSignedURL)
-	assert.NotEmpty(t, preSignedURL.Url)
+	assert.NotEmpty(t, preSignedURL.URL)
 	assert.Equal(t, 60*time.Second, preSignedURL.Expiration)
 
 	objects := itutils.ListBucketObjects(t, minioContainer)
@@ -162,7 +162,7 @@ func TestIntegrationMinioObjectStoreGeUploadUrl(t *testing.T) {
 	assert.Equal(t, objects[0].Key, uuid)
 }
 
-func TestIntegrationMinioObjectStoreGeDownloadUrl(t *testing.T) {
+func TestIntegrationMinioObjectStoreGeDownloadURL(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping integration test")
 	}
@@ -171,8 +171,8 @@ func TestIntegrationMinioObjectStoreGeDownloadUrl(t *testing.T) {
 	ctx := context.Background()
 
 	// Start the container
-	minioContainer := itutils.NewMinioContainer(t, ctx)
-	defer itutils.TerminateMinio(t, ctx, minioContainer)
+	minioContainer := itutils.NewMinioContainer(ctx, t)
+	defer itutils.TerminateMinio(ctx, t, minioContainer)
 
 	// Initialize MinIO instance
 	itutils.InitMinio(t, minioContainer)
@@ -185,7 +185,7 @@ func TestIntegrationMinioObjectStoreGeDownloadUrl(t *testing.T) {
 	store := objectstore.NewMinioObjectStore(objectstore.MinioConfig{
 		Endpoint:          minioContainer.Endpoint,
 		Bucket:            minioContainer.Bucket,
-		AccessKeyId:       minioContainer.AccessKeyId,
+		AccessKeyID:       minioContainer.AccessKeyID,
 		SecretAccessKey:   minioContainer.SecretAccessKey,
 		ObjectNamePrefix:  "",
 		DefaultExpiration: 60 * time.Second,
@@ -199,15 +199,15 @@ func TestIntegrationMinioObjectStoreGeDownloadUrl(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	/// When
-	preSignedURL, err := store.GetDownloadUrl(uuid)
+	preSignedURL, err := store.GetDownloadURL(uuid)
 
 	filename := filepath.Join(dir, "up.gif")
-	downloadFile(t, preSignedURL.Url, filename)
+	downloadFile(t, preSignedURL.URL, filename)
 
 	/// Then
 	assert.NoError(t, err)
 	assert.NotNil(t, preSignedURL)
-	assert.NotEmpty(t, preSignedURL.Url)
+	assert.NotEmpty(t, preSignedURL.URL)
 	assert.Equal(t, 60*time.Second, preSignedURL.Expiration)
 
 	checksum := calculateFileSha256(t, filename)

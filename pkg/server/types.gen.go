@@ -18,8 +18,8 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-// PreSignedUrl defines model for PreSignedUrl.
-type PreSignedUrl struct {
+// PreSignedURL defines model for PreSignedURL.
+type PreSignedURL struct {
 	// URL expiration time in seconds
 	Expiration int `json:"expiration"`
 
@@ -27,7 +27,7 @@ type PreSignedUrl struct {
 	Id string `json:"id"`
 
 	// The presigned URL
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 // UploadRequestBody defines model for UploadRequestBody.

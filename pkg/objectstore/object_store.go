@@ -4,13 +4,13 @@ import "time"
 
 type ObjectStore interface {
 	Connect() error
-	GetUploadUrl(key string) (*PreSignedUrl, error)
-	GetUploadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error)
-	GetDownloadUrl(key string) (*PreSignedUrl, error)
-	GetDownloadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error)
+	GetUploadURL(key string) (*PreSignedURL, error)
+	GetUploadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error)
+	GetDownloadURL(key string) (*PreSignedURL, error)
+	GetDownloadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error)
 }
 
-type PreSignedUrl struct {
-	Url        string
+type PreSignedURL struct {
+	URL        string
 	Expiration time.Duration
 }

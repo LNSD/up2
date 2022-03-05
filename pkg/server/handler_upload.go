@@ -21,7 +21,7 @@ func (s Server) PostUpload(c echo.Context) error {
 	objectStore := *ctx.ObjectStore
 
 	// Get URL unique identifier
-	objectId, err := uuid.NewRandom()
+	objectID, err := uuid.NewRandom()
 	if err != nil {
 		c.Logger().Error(err)
 		return ctx.JSON(
@@ -50,14 +50,14 @@ func (s Server) PostUpload(c echo.Context) error {
 	}
 
 	// Generate a pre-signed upload URL
-	objectKey := objectId.String()
+	objectKey := objectID.String()
 
-	var preSignedURL *objectstore.PreSignedUrl
+	var preSignedURL *objectstore.PreSignedURL
 	if req.Expiration == nil {
-		preSignedURL, err = objectStore.GetUploadUrl(objectKey)
+		preSignedURL, err = objectStore.GetUploadURL(objectKey)
 	} else {
 		expiration := time.Duration(*req.Expiration) * time.Second
-		preSignedURL, err = objectStore.GetUploadUrlWithExpiration(objectKey, expiration)
+		preSignedURL, err = objectStore.GetUploadURLWithExpiration(objectKey, expiration)
 	}
 
 	if err != nil {
@@ -68,8 +68,8 @@ func (s Server) PostUpload(c echo.Context) error {
 		)
 	}
 
-	return ctx.JSON(http.StatusOK, PreSignedUrl{
-		Url:        preSignedURL.Url,
+	return ctx.JSON(http.StatusOK, PreSignedURL{
+		URL:        preSignedURL.URL,
 		Expiration: int(preSignedURL.Expiration.Seconds()),
 		Id:         objectKey,
 	})

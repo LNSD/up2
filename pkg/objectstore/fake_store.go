@@ -26,32 +26,32 @@ func (s fakeObjectStore) Connect() error {
 	return nil
 }
 
-func (s fakeObjectStore) getFakeUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error) {
+func (s fakeObjectStore) getFakeURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error) {
 	fake := faker.New()
 
 	fakeBucket := s.config.Bucket
 	fakeObjectPrefix := s.config.ObjectNamePrefix
 	fakeDomain := s.config.Domain
 	fakeToken := fake.Hash().SHA512()
-	fakeUrl := fmt.Sprintf("https://%s/%s/%s%s?token=%s", fakeDomain, fakeBucket, fakeObjectPrefix, key, fakeToken)
+	fakeURL := fmt.Sprintf("https://%s/%s/%s%s?token=%s", fakeDomain, fakeBucket, fakeObjectPrefix, key, fakeToken)
 
-	return &PreSignedUrl{fakeUrl, expiration}, nil
+	return &PreSignedURL{fakeURL, expiration}, nil
 }
 
-func (s fakeObjectStore) GetUploadUrl(key string) (*PreSignedUrl, error) {
-	return s.GetUploadUrlWithExpiration(key, s.config.DefaultExpiration)
+func (s fakeObjectStore) GetUploadURL(key string) (*PreSignedURL, error) {
+	return s.GetUploadURLWithExpiration(key, s.config.DefaultExpiration)
 }
 
-func (s fakeObjectStore) GetUploadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error) {
-	return s.getFakeUrlWithExpiration(key, expiration)
+func (s fakeObjectStore) GetUploadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error) {
+	return s.getFakeURLWithExpiration(key, expiration)
 }
 
-func (s fakeObjectStore) GetDownloadUrl(key string) (*PreSignedUrl, error) {
-	return s.getFakeUrlWithExpiration(key, s.config.DefaultExpiration)
+func (s fakeObjectStore) GetDownloadURL(key string) (*PreSignedURL, error) {
+	return s.getFakeURLWithExpiration(key, s.config.DefaultExpiration)
 }
 
-func (s fakeObjectStore) GetDownloadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error) {
-	return s.getFakeUrlWithExpiration(key, expiration)
+func (s fakeObjectStore) GetDownloadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error) {
+	return s.getFakeURLWithExpiration(key, expiration)
 }
 
 func NewFakeObjectStore(config *FakeObjectStoreConfig) ObjectStore {

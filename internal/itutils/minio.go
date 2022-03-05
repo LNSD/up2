@@ -13,7 +13,7 @@ import (
 
 const testContainerRegion = "eu-central-1"
 const testContainerBucket = "test"
-const testContainerAccessKeyId = "minio"
+const testContainerAccessKeyID = "minio"
 const testContainerSecretAccessKey = "miniostorage"
 
 type MinioContainer struct {
@@ -22,17 +22,17 @@ type MinioContainer struct {
 	ConsoleEndpoint string
 	Region          string
 	Bucket          string
-	AccessKeyId     string
+	AccessKeyID     string
 	SecretAccessKey string
 }
 
-func NewMinioContainer(t *testing.T, ctx context.Context) *MinioContainer {
+func NewMinioContainer(ctx context.Context, t *testing.T) *MinioContainer {
 	req := testcontainers.ContainerRequest{
 		Image:        "quay.io/minio/minio:latest",
 		Name:         "minio",
 		ExposedPorts: []string{"9000/tcp", "9001/tcp"},
 		Env: map[string]string{
-			"MINIO_ROOT_USER":     testContainerAccessKeyId,
+			"MINIO_ROOT_USER":     testContainerAccessKeyID,
 			"MINIO_ROOT_PASSWORD": testContainerSecretAccessKey,
 		},
 		Cmd:        []string{"server", "--console-address", ":9001", "/data"},
@@ -70,7 +70,7 @@ func NewMinioContainer(t *testing.T, ctx context.Context) *MinioContainer {
 		Bucket:          testContainerBucket,
 		Endpoint:        endpoint,
 		ConsoleEndpoint: consoleEndpoint,
-		AccessKeyId:     testContainerAccessKeyId,
+		AccessKeyID:     testContainerAccessKeyID,
 		SecretAccessKey: testContainerSecretAccessKey,
 	}
 	return minioContainer
@@ -79,7 +79,7 @@ func NewMinioContainer(t *testing.T, ctx context.Context) *MinioContainer {
 
 func InitMinio(t *testing.T, container *MinioContainer) {
 	minioClient, err := minio.New(container.Endpoint, &minio.Options{
-		Creds: credentials.NewStaticV4(container.AccessKeyId, container.SecretAccessKey, ""),
+		Creds: credentials.NewStaticV4(container.AccessKeyID, container.SecretAccessKey, ""),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -95,7 +95,7 @@ func InitMinio(t *testing.T, container *MinioContainer) {
 	}
 }
 
-func TerminateMinio(t *testing.T, ctx context.Context, container *MinioContainer) {
+func TerminateMinio(ctx context.Context, t *testing.T, container *MinioContainer) {
 	if err := container.Terminate(ctx); err != nil {
 		t.Fatal(err)
 	}
@@ -103,7 +103,7 @@ func TerminateMinio(t *testing.T, ctx context.Context, container *MinioContainer
 
 func ListBucketObjects(t *testing.T, container *MinioContainer) []minio.ObjectInfo {
 	minioClient, err := minio.New(container.Endpoint, &minio.Options{
-		Creds: credentials.NewStaticV4(container.AccessKeyId, container.SecretAccessKey, ""),
+		Creds: credentials.NewStaticV4(container.AccessKeyID, container.SecretAccessKey, ""),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -134,7 +134,7 @@ func PutObject(t *testing.T, container *MinioContainer, key string, filename str
 	}
 
 	minioClient, err := minio.New(container.Endpoint, &minio.Options{
-		Creds: credentials.NewStaticV4(container.AccessKeyId, container.SecretAccessKey, ""),
+		Creds: credentials.NewStaticV4(container.AccessKeyID, container.SecretAccessKey, ""),
 	})
 	if err != nil {
 		t.Fatal(err)

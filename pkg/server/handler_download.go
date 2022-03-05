@@ -42,12 +42,12 @@ func (s Server) PostDownload(c echo.Context) error {
 	objectKey := req.Id
 
 	var err error
-	var preSignedURL *objectstore.PreSignedUrl
+	var preSignedURL *objectstore.PreSignedURL
 	if req.Expiration == nil {
-		preSignedURL, err = objectStore.GetDownloadUrl(objectKey)
+		preSignedURL, err = objectStore.GetDownloadURL(objectKey)
 	} else {
 		expiration := time.Duration(*req.Expiration) * time.Second
-		preSignedURL, err = objectStore.GetDownloadUrlWithExpiration(objectKey, expiration)
+		preSignedURL, err = objectStore.GetDownloadURLWithExpiration(objectKey, expiration)
 	}
 
 	if err != nil {
@@ -58,8 +58,8 @@ func (s Server) PostDownload(c echo.Context) error {
 		)
 	}
 
-	return ctx.JSON(http.StatusOK, PreSignedUrl{
-		Url:        preSignedURL.Url,
+	return ctx.JSON(http.StatusOK, PreSignedURL{
+		URL:        preSignedURL.URL,
 		Expiration: int(preSignedURL.Expiration.Seconds()),
 		Id:         objectKey,
 	})

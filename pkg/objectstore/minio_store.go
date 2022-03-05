@@ -10,7 +10,7 @@ import (
 
 type MinioConfig struct {
 	Endpoint          string
-	AccessKeyId       string
+	AccessKeyID       string
 	SecretAccessKey   string
 	Bucket            string
 	ObjectNamePrefix  string
@@ -24,7 +24,7 @@ type minioObjectStore struct {
 func (s minioObjectStore) Connect() error {
 	// Initialize minio client object
 	_, err := minio.New(s.config.Endpoint, &minio.Options{
-		Creds: credentials.NewStaticV4(s.config.AccessKeyId, s.config.SecretAccessKey, ""),
+		Creds: credentials.NewStaticV4(s.config.AccessKeyID, s.config.SecretAccessKey, ""),
 	})
 	if err != nil {
 		return err
@@ -32,15 +32,15 @@ func (s minioObjectStore) Connect() error {
 	return nil
 }
 
-func (s minioObjectStore) GetUploadUrl(key string) (*PreSignedUrl, error) {
-	return s.GetUploadUrlWithExpiration(key, s.config.DefaultExpiration)
+func (s minioObjectStore) GetUploadURL(key string) (*PreSignedURL, error) {
+	return s.GetUploadURLWithExpiration(key, s.config.DefaultExpiration)
 }
 
-func (s minioObjectStore) GetUploadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error) {
+func (s minioObjectStore) GetUploadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error) {
 	// Initialize minio client object
 	// TODO: Share minio client instance between calls
 	minioClient, err := minio.New(s.config.Endpoint, &minio.Options{
-		Creds: credentials.NewStaticV4(s.config.AccessKeyId, s.config.SecretAccessKey, ""),
+		Creds: credentials.NewStaticV4(s.config.AccessKeyID, s.config.SecretAccessKey, ""),
 	})
 	if err != nil {
 		return nil, err
@@ -52,18 +52,18 @@ func (s minioObjectStore) GetUploadUrlWithExpiration(key string, expiration time
 		return nil, err
 	}
 
-	return &PreSignedUrl{preSignedURL.String(), expiration}, nil
+	return &PreSignedURL{preSignedURL.String(), expiration}, nil
 }
 
-func (s minioObjectStore) GetDownloadUrl(key string) (*PreSignedUrl, error) {
-	return s.GetDownloadUrlWithExpiration(key, s.config.DefaultExpiration)
+func (s minioObjectStore) GetDownloadURL(key string) (*PreSignedURL, error) {
+	return s.GetDownloadURLWithExpiration(key, s.config.DefaultExpiration)
 }
 
-func (s minioObjectStore) GetDownloadUrlWithExpiration(key string, expiration time.Duration) (*PreSignedUrl, error) {
+func (s minioObjectStore) GetDownloadURLWithExpiration(key string, expiration time.Duration) (*PreSignedURL, error) {
 	// Initialize minio client object
 	// TODO: Share minio client instance between calls
 	minioClient, err := minio.New(s.config.Endpoint, &minio.Options{
-		Creds: credentials.NewStaticV4(s.config.AccessKeyId, s.config.SecretAccessKey, ""),
+		Creds: credentials.NewStaticV4(s.config.AccessKeyID, s.config.SecretAccessKey, ""),
 	})
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (s minioObjectStore) GetDownloadUrlWithExpiration(key string, expiration ti
 		return nil, err
 	}
 
-	return &PreSignedUrl{preSignedURL.String(), expiration}, nil
+	return &PreSignedURL{preSignedURL.String(), expiration}, nil
 }
 
 func NewMinioObjectStore(config MinioConfig) ObjectStore {
