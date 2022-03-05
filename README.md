@@ -1,5 +1,7 @@
 <h1>UP²</h1> 
 
+[![CI](https://github.com/LNSD/up2/actions/workflows/ci.yml/badge.svg)](https://github.com/LNSD/up2/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/LNSD/up2/branch/main/graph/badge.svg?token=3X3Y1RAKZ1)](https://codecov.io/gh/LNSD/up2)
+
 > **U**pload **P**re-signed **U**RL **P**rovider → UPUP → UP²
 
 Microservice written in GO that generates pre-signed file upload (and download) URLs through a Restful API.
