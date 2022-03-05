@@ -1,21 +1,7 @@
 name: CI
 on:
-  push:
-    paths:
-      - '**.go'
-      - 'go.*'
-      - '_fixture/**'
-      - '.github/**'
-      - 'codecov.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - '**.go'
-      - 'go.*'
-      - '_fixture/**'
-      - '.github/**'
-      - 'codecov.yml'
+  - push
+  - pull_request
 
 jobs:
   branch:
