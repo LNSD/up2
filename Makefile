@@ -39,9 +39,9 @@ fmt: format
 lint:		## Run all available linters
 lint: lint-go
 
-lint-go: 	## Use golintci-lint on your project
+lint-go: 	## Use golangci-lint on your project
 	$(eval OUTPUT_OPTIONS = $(shell [ "${CI}" == "true" ] && echo "--out-format checkstyle ./... | tee /dev/tty > checkstyle-report.xml" || echo "" ))
-	docker run --name make-lint-go --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:latest-alpine golangci-lint run --verbose $(OUTPUT_OPTIONS)
+	golangci-lint run --verbose $(OUTPUT_OPTIONS)
 
 ## Test:
 test:		## Run the unit and integration tests

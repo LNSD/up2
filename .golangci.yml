@@ -4,12 +4,14 @@
 run:
   timeout: 5m
   modules-download-mode: readonly
+  build-tags:
+    - integration
 
 
 linters:
   disable-all: true
   enable:
-#    - errcheck
+    #    - errcheck
     #    - goimports
     - revive
     - govet
@@ -20,3 +22,5 @@ issues:
   exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0
+  exclude:
+    - "exported (const|type|method|function) (.+) should have comment or be unexported"
