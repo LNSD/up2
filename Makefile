@@ -52,6 +52,7 @@ endif
 	$(GO) test --tags=integration -v -race  ./... $(OUTPUT_OPTIONS)
 
 test-cov: 		## Run the unit and integration tests and export the coverage
+	@mkdir -p ./out
 	$(GO) test --tags=integration -cover -covermode=atomic -coverprofile=out/coverage.out ./...
 	$(GO) tool cover -func out/coverage.out
 
@@ -63,13 +64,14 @@ endif
 	$(GO) test -v -race ./... $(OUTPUT_OPTIONS)
 
 unittest-cov: 	## Run the unit tests and export the coverage
+	@mkdir -p ./out
 	$(GO) test -cover -covermode=atomic -coverprofile=out/coverage.out ./...
 	$(GO) tool cover -func out/coverage.out
 
 
 ## Build:
 build: 		## Build your project and put the output binary in out/bin/
-	mkdir -p ./out
+	@mkdir -p ./out
 	GO111MODULE=on $(GO) build -mod vendor -o ./out/bin/$(BINARY_NAME) ./cmd/up2
 
 clean: 		## Remove build related file
