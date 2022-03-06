@@ -12,7 +12,7 @@ type Server struct {
 	*echo.Echo
 }
 
-func New(store *objectstore.ObjectStore, config *Config) Server {
+func New(store objectstore.ObjectStore, config *Config) Server {
 	e := echo.New()
 	e.HideBanner = true
 	e.Use(NewCustomContextMiddleware(store))

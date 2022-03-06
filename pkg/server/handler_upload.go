@@ -10,15 +10,7 @@ import (
 
 func (s Server) PostUpload(c echo.Context) error {
 	ctx := c.(*CustomContext)
-
-	// Check if Object Store connection is ready
-	if ctx.ObjectStore == nil {
-		return ctx.JSON(
-			http.StatusInternalServerError,
-			ErrorResponse{"object store connection not available"},
-		)
-	}
-	objectStore := *ctx.ObjectStore
+	objectStore := ctx.ObjectStore
 
 	// Get URL unique identifier
 	objectID, err := uuid.NewRandom()
@@ -31,8 +23,8 @@ func (s Server) PostUpload(c echo.Context) error {
 	}
 
 	// Get URL expiration time
-	var req *UploadRequestBody
-	if err := c.Bind(req); err != nil {
+	var req UploadRequestBody
+	if err := c.Bind(&req); err != nil {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			ErrorResponse{"invalid request body"},

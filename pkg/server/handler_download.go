@@ -9,19 +9,11 @@ import (
 
 func (s Server) PostDownload(c echo.Context) error {
 	ctx := c.(*CustomContext)
-
-	// Check if Object Store connection is ready
-	if ctx.ObjectStore == nil {
-		return ctx.JSON(
-			http.StatusInternalServerError,
-			ErrorResponse{"object store connection not available"},
-		)
-	}
-	objectStore := *ctx.ObjectStore
+	objectStore := ctx.ObjectStore
 
 	// Get URL expiration time
-	var req *DownloadRequestBody
-	if err := c.Bind(req); err != nil {
+	var req DownloadRequestBody
+	if err := c.Bind(&req); err != nil {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			ErrorResponse{"invalid request body"},

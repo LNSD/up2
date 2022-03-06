@@ -29,7 +29,7 @@ func main() {
 	// TODO: Check object store connection
 
 	// Instantiate and create server
-	srv := server.New(&store, &server.Config{
+	srv := server.New(store, &server.Config{
 		Host: serverConfig.Host,
 		Port: serverConfig.Port,
 	})

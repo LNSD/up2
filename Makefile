@@ -20,12 +20,16 @@ all: clean vendor lint build test
 
 
 ## Generate:
-codegen: ## Generate OpenAPI 3.0 server code
+gen-server: ## Generate OpenAPI 3.0 server code
 ifeq (, $(shell which oapi-codegen))
 	GO111MODULE=off $(GO) get -u github.com/deepmap/oapi-codegen/cmd/oapi-codegen
 endif
 	oapi-codegen -package server -generate types api/spec.yaml > pkg/server/types.gen.go
 	oapi-codegen -package server -generate server api/spec.yaml > pkg/server/server.gen.go
+
+gen-mocks: 	## Generate mocks using mockery
+	#cd pkg
+	#mockery --recursive=true --name=ObjectStore --output=. --filename=mock_store.go --structname=MockObjectStore --inpackage
 
 
 ## Format:

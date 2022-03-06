@@ -7,10 +7,10 @@ import (
 
 type CustomContext struct {
 	echo.Context
-	ObjectStore *objectstore.ObjectStore
+	ObjectStore objectstore.ObjectStore
 }
 
-func NewCustomContextMiddleware(objectStore *objectstore.ObjectStore) echo.MiddlewareFunc {
+func NewCustomContextMiddleware(objectStore objectstore.ObjectStore) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {
 			cc := &CustomContext{

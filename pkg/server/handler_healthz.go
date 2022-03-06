@@ -7,11 +7,11 @@ import (
 
 func (s Server) GetHealthz(c echo.Context) error {
 	ctx := c.(*CustomContext)
+	objectStore := ctx.ObjectStore
 
-	// Check if Object Store connection is ready
-	if ctx.ObjectStore == nil {
+	if err := objectStore.Connect(); err != nil {
 		return ctx.JSON(
-			http.StatusInternalServerError,
+			http.StatusServiceUnavailable,
 			ErrorResponse{"object store connection not available"},
 		)
 	}
