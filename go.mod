@@ -3,7 +3,7 @@ module upload-presigned-url-provider
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.43.20
+	github.com/aws/aws-sdk-go v1.43.22
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/google/uuid v1.3.0
 	github.com/jaswdr/faker v1.10.2
